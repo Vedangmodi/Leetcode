@@ -86,49 +86,49 @@ class Solution {
     }
 
 
-   public int case2(String str, char a, char b){
-    int n = str.length();
-    int[] first = new int[2*n + 1];
-    Arrays.fill(first, -2);  // -2 means not set
+    public int case2(String str, char a, char b){
+        int n = str.length();
+        int[] first = new int[2*n + 1];
+        Arrays.fill(first, -2);  // -2 means not set
     
-    int diff = n;  // Start at offset n (represents 0)
-    int max = 0;
-    int clearIdx = -1;
+        int diff = n;  // Start at offset n (represents 0)
+        int max = 0;
+        int clearIdx = -1;
     
-    first[diff] = -1;  // diff=0 at index -1
+        first[diff] = -1;  // diff=0 at index -1
     
-    for(int i = 0; i < n; i++){
-        char ch = str.charAt(i);
+        for(int i = 0; i < n; i++){
+            char ch = str.charAt(i);
         
-        if(ch == a){
-            diff++;
-        }
-        else if(ch == b){
-            diff--;
-        }
-        else {
-            clearIdx = i;
-            diff = n;  // Reset diff to 0 (offset n)
-            first[diff] = clearIdx;  // diff=0 at current index
-            continue;
-        }
+            if(ch == a){
+                diff++;
+            }
+            else if(ch == b){
+                diff--;
+            }
+            else {
+                clearIdx = i;
+                diff = n;  // Reset diff to 0 (offset n)
+                first[diff] = clearIdx;  // diff=0 at current index
+                continue;
+            }
         
-        int idx = diff;
+            int idx = diff;
         
-        if(first[idx] >= clearIdx){
-            max = Math.max(max, i - first[idx]);
-        } else {
-            first[idx] = i;
+            if(first[idx] >= clearIdx){
+                max = Math.max(max, i - first[idx]);
+            } else {
+                first[idx] = i;
+            }
         }
+    
+        return max;
     }
-    
-    return max;
-}
 
 
 
 
-        
+    // public int case2(String str, char a, char b){  
         // HashMap<Integer, Integer> map = new HashMap<>();
 
         // map.put(0, -1);
@@ -163,10 +163,10 @@ class Solution {
         // }
 
         // return max;
+    // }    
 
 
-    }
-// }
+}
 
 class Pair{
     int a;
@@ -192,16 +192,16 @@ class Pair{
         return a == p.a && b == p.b;
     }
 
-    @Override
-    public int hashCode(){
-        return 31 * a + b;
-    }
-
-
     // @Override
     // public int hashCode(){
-    //     return Objects.hash(a,b);
+    //     return 31 * a + b;
     // }
+
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(a,b);
+    }
     
 
 }
