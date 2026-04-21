@@ -1,54 +1,75 @@
 class Solution {
-    public int findCircleNum(int[][] mat) {
-        int n = mat.length;
-        int m = mat[0].length;
+    int[] parent;
+    int[] rank;
 
-        HashMap<Integer, ArrayList<Integer>> map = new HashMap<>();
+    public int find(int i){
+        if(parent[i] != i){
+            parent[i] = find(parent[i]);
+        }
+        return parent[i];
+    }
 
-        for(int i=0; i<n; i++){
-            map.put(i, new ArrayList<Integer>()) ;
+    public void union(int x, int y){
+        int px = find(x);
+        int py = find(y);
+
+        if(px == py){
+            return;
         }
 
+
+        if(rank[px] > rank[py]){
+            parent[py] = px;
+        }
+        else if(rank[px] < rank[py]){
+            parent[px] = py;
+        }
+        else{
+            parent[py] = px;
+            rank[px]++;
+        }
+    }
+
+    public int findCircleNum(int[][] mat) {
+        int n = mat.length;
+
+        parent = new int[n];
+        rank = new int[n];
+
+        for(int i=0 ;i<n; i++){
+            parent[i] = i;
+        }
+
+        //union step
         for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
+            for(int j=0; j<n; j++){
                 if(mat[i][j] == 1){
-                    map.get(i).add(j);
-                    map.get(j).add(i);
+                    union(i, j);
 
                 }
-                
             }
         }
 
-        boolean[] visited = new boolean[n];
         int count = 0;
 
         for(int i=0; i<n; i++){
-            if(!visited[i]){
+            if(parent[i] == i){
                 count++;
-                dfs(map, visited, i);
-                
             }
+
         }
 
         return count;
-         
-    }
-
-    public void dfs(HashMap<Integer, ArrayList<Integer>> map, boolean[] visited, int x){
-        visited[x] = true;
-
-        for(int i : map.get(x)){
-            if(!visited[i]){
-                dfs(map, visited, i);
-            }
-
-        }
-
-
+        
     }
 }
 
-// [1,1,0],
-// [1,1,0],
-// [0,0,1]
+
+
+
+
+
+
+
+
+
