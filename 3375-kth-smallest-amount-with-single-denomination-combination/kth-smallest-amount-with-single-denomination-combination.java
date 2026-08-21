@@ -1,16 +1,17 @@
 class Solution {
 
     private long countSmaller(long mid, int[] coins) {
-        long count = 0;
+        long correctedCount = 0;
         int n = coins.length;
 
-        for (int mask = 1; mask < (1 << n); mask++) {
+        // 2^n * n * log(maxCoin)
+        for (int expressions = 1; expressions <= (1 << n) - 1; expressions++) { 
             long lcm = 0;
-            int order = 0;
+            long order = 0;
 
             for (int i = 0; i < n; i++) {
-                if ((mask & (1 << i)) != 0) {
-                    order++;
+                if ((expressions & (1 << i)) != 0) {
+                    order++; // we have taken ith coin
 
                     if (lcm == 0) {
                         lcm = coins[i];
@@ -20,44 +21,39 @@ class Solution {
                 }
             }
 
-            if (order % 2 == 1) {
-                count += mid / lcm;
+            if (order % 2 == 0) { 
+                correctedCount -= mid / lcm;
             } else {
-                count -= mid / lcm;
+                correctedCount += mid / lcm;
             }
         }
 
-        return count;
+        return correctedCount;
     }
 
     private long gcd(long a, long b) {
-        while (b != 0) {
-            long temp = a % b;
-            a = b;
-            b = temp;
-        }
-        return a;
+        return b == 0 ? a : gcd(b, a % b);
     }
 
     public long findKthSmallest(int[] coins, int k) {
         long result = -1;
 
         int maxCoin = 0;
-        for (int coin : coins) {
-            maxCoin = Math.max(maxCoin, coin);
-        }
+        for (int c : coins) maxCoin = Math.max(maxCoin, c);
 
-        long left = 1;
-        long right = (long) maxCoin * k;
+        long l = 1;
+        long r = (long) maxCoin * k;
 
-        while (left <= right) {
-            long mid = left + (right - left) / 2;
+        // log(maxCoin * k) * 2^n * n * log(maxCoin)
+        while (l <= r) {
+            long mid = l + (r - l) / 2;
 
-            if (countSmaller(mid, coins) >= k) {
+            if (countSmaller(mid, coins) >= k) { 
+
                 result = mid;
-                right = mid - 1;
+                r = mid - 1;
             } else {
-                left = mid + 1;
+                l = mid + 1;
             }
         }
 
