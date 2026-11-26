@@ -1,66 +1,70 @@
 class Solution {
-    public String minWindow(String s, String t) {
-        HashMap<Character, Integer> maps = new HashMap<>();
-        HashMap<Character, Integer> mapt = new HashMap<>();
+    public String minWindow(String str, String t) {
 
-        for(int i=0; i<t.length(); i++){
-            char ch = t.charAt(i);
-            mapt.put(ch, mapt.getOrDefault(ch, 0) + 1);
+        int n = str.length();
+        int a = t.length();
+
+        if(n < a){
+            return new String("");
         }
+
+        HashMap<Character, Integer> map = new HashMap<>();
+        HashMap<Character, Integer> map2 = new HashMap<>();
+
+        for(int i=0; i<a; i++){
+            map2.put(t.charAt(i), map2.getOrDefault(t.charAt(i), 0) + 1);
+        }
+
+        int p = 0;
+        int q = Integer.MAX_VALUE;
 
         int j = 0;
 
-        int a = 0;
-        int b = Integer.MAX_VALUE; 
+        for(int i=0; i<n; i++){
+            char ch = str.charAt(i);
 
-        for(int i=0; i<s.length(); i++){
-            char ch = s.charAt(i);
+            map.put(ch, map.getOrDefault(ch ,0) + 1);
 
-            maps.put(ch, maps.getOrDefault(ch, 0) + 1);
-
-            if(!isValid(maps, mapt)){
+            if(!isValid(map, map2)){
                 continue;
-                
             }
-            
-            while(isValid(maps, mapt)){
-                if(b - a > i - j){
-                    a = j;
-                    b = i;
-                }
+            else{
+                while(isValid(map, map2)){
+                    if(i - j < q - p){
+                        p = j;
+                        q = i;
+                    }
 
-                char c = s.charAt(j);
+                    char c = str.charAt(j);
 
-                if(maps.get(c) > 1){
-                    maps.put(c, maps.getOrDefault(c,0) - 1);
+                    if(map.get(c) > 1){
+                        map.put(c, map.getOrDefault(c, 0) - 1);
+                    }
+                    else{
+                        map.remove(c);
+                    }
+
+                    j++;
                 }
-                else{
-                    maps.remove(c);
-                }
-                j++;
             }
-            
         }
 
-        if (b == Integer.MAX_VALUE) return "";
-
-        StringBuilder sb = new StringBuilder();
-
-        for(int i=a; i<=b; i++){
-            sb.append(s.charAt(i));
-
+        if(q == Integer.MAX_VALUE){
+            return new String("");
         }
 
-        return sb.toString();
+
+        return str.substring(p, q+1);
+
         
     }
 
-    public boolean isValid(HashMap<Character, Integer> maps, HashMap<Character, Integer> mapt){
-        for(Character ch : mapt.keySet()){
-            if(!maps.containsKey(ch)){
+    public boolean isValid(HashMap<Character, Integer> map, HashMap<Character, Integer> map2){
+        for(char ch : map2.keySet()){
+            if(!map.containsKey(ch)){
                 return false;
             }
-            else if(mapt.get(ch) > maps.get(ch)){
+            else if(map.get(ch) < map2.get(ch)){
                 return false;
             }
         }
